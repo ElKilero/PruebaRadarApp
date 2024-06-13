@@ -6,6 +6,7 @@ import { Example, Home, Startup } from '@/screens';
 import { useTheme } from '@/theme';
 
 import type { RootStackParamList } from '@/types/navigation';
+import VideoPlayer from '@/screens/VideoPlayer/VideoPlayer';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -17,6 +18,7 @@ function ApplicationNavigator() {
 			<NavigationContainer theme={navigationTheme}>
 				<Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
 					<Stack.Screen name="Home" component={Home} />
+					<Stack.Screen name="VideoPlayer" component={VideoPlayer} />
 					<Stack.Screen name="Startup" component={Startup} />
 					<Stack.Screen name="Example" component={Example} />
 				</Stack.Navigator>

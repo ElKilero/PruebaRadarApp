@@ -65,7 +65,11 @@ function Home() {
         }
     };
 
-    const navigateVideo = (id: string) => {
+    const navigateVideo = (videoId: string, title: string,) => {
+        navigate('VideoPlayer', {
+            videoId: videoId,
+            title: title
+        })
     }
 
     const renderItem: ListRenderItem<VideoListItemProp> = ({ item }) => (
@@ -74,7 +78,7 @@ function Home() {
             title={item.snippet.title}
             channel={item.snippet.channelTitle}
             description={item.snippet.description}
-            onPress={() => navigateVideo(item.id.videoId)}
+            onPress={() => navigateVideo(item.id.videoId, item.snippet.title)}
         />
     )
 
