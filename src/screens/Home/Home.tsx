@@ -41,7 +41,7 @@ function Home() {
 
     const [currentId, setCurrentId] = useState(-1);
 
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState("halo reach")
 
     const { isSuccess, data, isFetching, refetch } = useQuery({
         queryKey: ['videoList', 0],

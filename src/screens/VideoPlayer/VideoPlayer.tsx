@@ -3,31 +3,60 @@ import { apiKey } from '@/services/listVideos/fetchVideoList';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { RootStackParamList, VideoPlayerScreenParams } from '@/types/navigation';
 import YoutubeIframe from 'react-native-youtube-iframe';
+import ViewShot, { captureRef } from 'react-native-view-shot';
+import { useRef, useState } from 'react';
+import { Button } from 'react-native-paper';
+import { Image } from 'react-native';
 
 interface Props extends NativeStackScreenProps<RootStackParamList> { }
 
 function VideoPlayer({ route }: Props) {
     const { params } = route
     const videoParams = params as VideoPlayerScreenParams
-    console.log(videoParams.videoId)
-    console.log(apiKey)
-    /*
-    Errores:
-    La libreria de react native video no puede reproducir los videos de youtube
-    La libreria de youtube react native tiene errores con los styles y necesita ser parcheada
-    La libreria de youtube react native tiene como dependencia el YoutubeAndroidPlayer API que esta deprecado
+
+    const viewShotRef = useRef<ViewShot>(null);
+    const [imageUri, setImageUri] = useState<string | null>("");
+
     
-    Observaciones:
-    Cambiar a posible libreria react-native-youtube-iframe
-    */
+    const captureScreen = async () => {
+        try {
+            if (viewShotRef.current) {
+                const uri = await captureRef(viewShotRef.current, {
+                    format: "jpg",
+                    quality: 0.9
+                });
+                console.log("Image saved to", uri);
+                setImageUri(uri);
+            }
+        } catch (error) {
+            console.error("Capture failed", error);
+        }
+    };
+
+
     return (
         <SafeScreen>
-            <YoutubeIframe
-                videoId={videoParams.videoId}
-                play
-                key={apiKey}
-                height={300}
-            />
+            <ViewShot ref={viewShotRef} options={{ fileName:"image", format: "jpg", quality: 0.9 }} >
+                <YoutubeIframe
+                    height={300}
+                    play
+                    videoId={videoParams.videoId}
+                    webViewProps={{
+                        allowsInlineMediaPlayback: true,
+                        mediaPlaybackRequiresUserAction: false,
+                    }}
+                />
+            </ViewShot>
+            <Button onPress={captureScreen} >
+                Capture Screen
+            </Button >
+            {imageUri && (
+                <Image
+                    source={{ uri: imageUri }}
+                    style={{ width: '100%', height: 200, marginTop: 20 }}
+                    resizeMode="contain"
+                />
+            )}
         </SafeScreen>
     )
 }
